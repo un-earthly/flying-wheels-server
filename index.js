@@ -49,6 +49,23 @@ const run = async () => {
             };
             await usersCollection.updateOne({ email }, updateDoc, options)
         })
+        app.get('/user', verifyJWT, async (req, res) => {
+            const email = req.decoded.email
+            res.send(await usersCollection.findOne({ email: email[0] }))
+        })
+
+        app.put('/updateProfile', verifyJWT, async (req, res) => {
+            const email = req.decoded.email[0]
+            const { linkedin, education, location, phone, img } = req.body
+
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: { linkedin, img, phone, location, education }
+
+            };
+            res.send(await usersCollection.updateOne({ email }, updateDoc, options))
+            // console.log(email)
+        })
         app.get('/products', async (req, res) => {
             res.send(await ProductsCollection.find().toArray())
         })
