@@ -64,7 +64,6 @@ const run = async () => {
 
             };
             res.send(await usersCollection.updateOne({ email }, updateDoc, options))
-            // console.log(email)
         })
         app.get('/products', async (req, res) => {
             res.send(await ProductsCollection.find().toArray())
