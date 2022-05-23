@@ -15,7 +15,11 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 function verifyJWT(req, res, next) {
     const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(401).send({ message: 'Un Authorized User' })
+    }
     const token = authHeader.split(' ')[1];
+
     jwt.verify(token, process.env.JWT__SECRET, (err, decoded) => {
         if (err) {
             return res.status(403).send({ message: 'Forbidden access' });
@@ -23,7 +27,6 @@ function verifyJWT(req, res, next) {
         req.decoded = decoded;
         next();
     })
-    // console.log(token)
 }
 const run = async () => {
     try {
@@ -50,8 +53,6 @@ const run = async () => {
             res.send(await ProductsCollection.find().toArray())
         })
         app.get('/products/:id', verifyJWT, async (req, res) => {
-            const decodedEmail = req.decoded
-            console.log(decodedEmail)
             let items = await ProductsCollection.findOne({ _id: ObjectId(req.params.id) })
             res.send(items)
         })
