@@ -51,16 +51,16 @@ const run = async () => {
         })
         app.get('/user', verifyJWT, async (req, res) => {
             const email = req.decoded.email
-            res.send(await usersCollection.findOne({ email: email[0] }))
+            res.send(await usersCollection.findOne({ email: email }))
         })
 
         app.put('/updateProfile', verifyJWT, async (req, res) => {
-            const email = req.decoded.email[0]
-            const { linkedin, education, location, phone, img } = req.body
+            const email = req.decoded.email
+            const { linkedin, education, location, phone, img, name } = req.body
 
             const options = { upsert: true };
             const updateDoc = {
-                $set: { linkedin, img, phone, location, education }
+                $set: { name, email, linkedin, img, phone, location, education }
 
             };
             res.send(await usersCollection.updateOne({ email }, updateDoc, options))
