@@ -33,6 +33,8 @@ const run = async () => {
         client.connect()
         const ProductsCollection = client.db("productsDB").collection("product")
         const usersCollection = client.db("usersDb").collection("user")
+        const reviewsCollection = client.db("usersDb").collection("review")
+        const ordersCollection = client.db("usersDb").collection("order")
         app.post('/login', async (req, res) => {
             const secret = process.env.JWT__SECRET
             const token = jwt.sign(req.body, secret)
@@ -64,6 +66,37 @@ const run = async () => {
 
             };
             res.send(await usersCollection.updateOne({ email }, updateDoc, options))
+        })
+        app.get('/review', async (req, res) => {
+            res.send(await reviewsCollection.find().toArray())
+        })
+        app.post('/review', verifyJWT, async (req, res) => {
+            const email = req.decoded.email
+            const { img, name, review, ratings } = req.body
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: { email, review, ratings, img, name }
+            };
+            res.send(await reviewsCollection.updateOne({ email }, updateDoc, options))
+        })
+        app.get('/orders', verifyJWT, async (req, res) => {
+            const email = req.decoded.email
+            res.send(await ordersCollection.find({ email }).toArray())
+        })
+        app.delete('/orders/:id', verifyJWT, async (req, res) => {
+            res.send(await ordersCollection.deleteOne({ _id: ObjectId(req.params.id) }))
+
+        })
+        app.post('/purchase', async (req, res) => {
+            const { id } = req.body
+            const existing = await ordersCollection.findOne({ id })
+            !existing ?
+                res.send(await ordersCollection.insertOne(req.body))
+                : res.status(302).send({ message: 'already exits' })
+        })
+        app.get('/review/byUser', verifyJWT, async (req, res) => {
+            const email = req.decoded.email
+            res.send(await reviewsCollection.findOne({ email }))
         })
         app.get('/products', async (req, res) => {
             res.send(await ProductsCollection.find().toArray())
