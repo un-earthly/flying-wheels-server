@@ -93,9 +93,12 @@ const run = async () => {
 
         })
 
-        app.post('/purchase', async (req, res) => {
+        app.post('/purchase', verifyJWT, async (req, res) => {
+            const email = req.decoded.email
             const { id } = req.body
-            const existing = await ordersCollection.findOne({ id })
+            const existing = await ordersCollection.findOne({ id, email })
+            const isAdmin = await usersCollection.findOne({ email })
+            isAdmin.admin && res.send({ message: "Admins cant Order" })
             !existing ?
                 res.send(await ordersCollection.insertOne(req.body))
                 : res.status(302).send({ message: 'already exits' })
