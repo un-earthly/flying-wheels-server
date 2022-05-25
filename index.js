@@ -4,6 +4,10 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 80;
 const jwt = require('jsonwebtoken');
+
+//stripe
+const stripe = require("stripe")(process.env.STRIPE__KEY);
+
 // middle Ware
 app.use(cors())
 app.use(express.json())
@@ -35,6 +39,7 @@ const run = async () => {
         const usersCollection = client.db("usersDb").collection("user")
         const reviewsCollection = client.db("usersDb").collection("review")
         const ordersCollection = client.db("usersDb").collection("order")
+        const paymentCollection = client.db("usersDb").collection("paid")
         app.post('/login', async (req, res) => {
             const secret = process.env.JWT__SECRET
             const token = jwt.sign(req.body, secret)
@@ -87,12 +92,46 @@ const run = async () => {
             res.send(await ordersCollection.deleteOne({ _id: ObjectId(req.params.id) }))
 
         })
+
         app.post('/purchase', async (req, res) => {
             const { id } = req.body
             const existing = await ordersCollection.findOne({ id })
             !existing ?
                 res.send(await ordersCollection.insertOne(req.body))
                 : res.status(302).send({ message: 'already exits' })
+        })
+
+        // stripe 
+        app.post("/create-payment-intent", verifyJWT, async (req, res) => {
+            const email = req.decoded.email
+            const { price } = req.body;
+            const payableAmount = price * 100
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: payableAmount,
+                currency: "usd",
+                automatic_payment_methods: {
+                    enabled: true,
+                },
+            })
+            res.send({ clientSecret: paymentIntent.client_secret })
+        });
+
+
+        app.get('/pay/:id', async (req, res) => {
+            const payFor = await ordersCollection.findOne({ _id: ObjectId(req.params.id) })
+
+            res.send(payFor)
+
+        })
+        app.patch('/pay/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id
+            const { transactionId, paymentStatus } = req.body
+            const updateDoc = {
+                $set: { transactionId, paymentStatus }
+            };
+            res.send(await ordersCollection.updateOne({ _id: ObjectId(id) }, updateDoc))
+
+
         })
         app.get('/review/byUser', verifyJWT, async (req, res) => {
             const email = req.decoded.email
