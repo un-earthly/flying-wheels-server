@@ -14,6 +14,7 @@ app.use(express.json())
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const req = require('express/lib/request');
 const uri = `mongodb+srv://${process.env.MOGO__ADMIN}:${process.env.MONGO__PASS}@cluster0.vcjhy.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -56,6 +57,9 @@ const run = async () => {
             };
             await usersCollection.updateOne({ email }, updateDoc, options)
         })
+        app.get('/alluser', async (req, res) => {
+            res.send(await usersCollection.find().toArray())
+        })
         app.get('/user', verifyJWT, async (req, res) => {
             const email = req.decoded.email
             res.send(await usersCollection.findOne({ email: email }))
@@ -88,9 +92,31 @@ const run = async () => {
             const email = req.decoded.email
             res.send(await ordersCollection.find({ email }).toArray())
         })
+        app.patch('/orders', verifyJWT, async (req, res) => {
+            const email = req.decoded.email
+            console.log(await ordersCollection.findOne({ _id: ObjectId(req.body) }))
+            console.log(req.body, email)
+        })
         app.delete('/orders/:id', verifyJWT, async (req, res) => {
             res.send(await ordersCollection.deleteOne({ _id: ObjectId(req.params.id) }))
 
+        })
+        // products based apis 
+        app.get('/products', async (req, res) => {
+            res.send(await ProductsCollection.find().toArray())
+        })
+        app.post('/product', verifyJWT, async (req, res) => {
+            const { name, img, desc, minOrdQty, pricePerUnit, availableQty } = req.body
+            const result = await ProductsCollection.insertOne({ name, img, desc, minOrdQty, pricePerUnit, availableQty })
+            res.send(result)
+        })
+        app.get('/products/:id', verifyJWT, async (req, res) => {
+            let items = await ProductsCollection.findOne({ _id: ObjectId(req.params.id) })
+            res.send(items)
+        })
+        app.delete('/product/:id', verifyJWT, async (req, res) => {
+            const result = await ProductsCollection.deleteOne({ _id: ObjectId(req.params.id) })
+            res.send(result)
         })
 
         app.post('/purchase', verifyJWT, async (req, res) => {
@@ -103,10 +129,18 @@ const run = async () => {
                 res.send(await ordersCollection.insertOne(req.body))
                 : res.status(302).send({ message: 'already exits' })
         })
-
-        // stripe 
+        app.patch('/makeadmin', async (req, res) => {
+            const id = req.body.id
+            const updateDoc = {
+                $set: {
+                    Admin: true
+                }
+            }
+            const result = await usersCollection.updateOne({ _id: ObjectId(id) }, updateDoc)
+            res.send(result)
+        })
+        // stripe || payment related apis
         app.post("/create-payment-intent", verifyJWT, async (req, res) => {
-            const email = req.decoded.email
             const { price } = req.body;
             const payableAmount = price * 100
             const paymentIntent = await stripe.paymentIntents.create({
@@ -122,7 +156,6 @@ const run = async () => {
 
         app.get('/pay/:id', async (req, res) => {
             const payFor = await ordersCollection.findOne({ _id: ObjectId(req.params.id) })
-
             res.send(payFor)
 
         })
@@ -140,13 +173,7 @@ const run = async () => {
             const email = req.decoded.email
             res.send(await reviewsCollection.findOne({ email }))
         })
-        app.get('/products', async (req, res) => {
-            res.send(await ProductsCollection.find().toArray())
-        })
-        app.get('/products/:id', verifyJWT, async (req, res) => {
-            let items = await ProductsCollection.findOne({ _id: ObjectId(req.params.id) })
-            res.send(items)
-        })
+
     } finally {
 
     }
