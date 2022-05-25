@@ -40,7 +40,6 @@ const run = async () => {
         const usersCollection = client.db("usersDb").collection("user")
         const reviewsCollection = client.db("usersDb").collection("review")
         const ordersCollection = client.db("usersDb").collection("order")
-        const paymentCollection = client.db("usersDb").collection("paid")
         app.post('/login', async (req, res) => {
             const secret = process.env.JWT__SECRET
             const token = jwt.sign(req.body, secret)
@@ -88,14 +87,20 @@ const run = async () => {
             };
             res.send(await reviewsCollection.updateOne({ email }, updateDoc, options))
         })
-        app.get('/orders', verifyJWT, async (req, res) => {
-            const email = req.decoded.email
-            res.send(await ordersCollection.find({ email }).toArray())
+        app.get('/orders', async (req, res) => {
+            res.send(await ordersCollection.find().toArray())
         })
         app.patch('/orders', verifyJWT, async (req, res) => {
+            const updateDoc = {
+                $set: {
+                    shippedStatus: true
+                }
+            }
+            res.send(await ordersCollection.updateOne({ _id: ObjectId(req.body) }, updateDoc))
+        })
+        app.get('/myorders', verifyJWT, async (req, res) => {
             const email = req.decoded.email
-            console.log(await ordersCollection.findOne({ _id: ObjectId(req.body) }))
-            console.log(req.body, email)
+            res.send(await ordersCollection.find({ email }).toArray())
         })
         app.delete('/orders/:id', verifyJWT, async (req, res) => {
             res.send(await ordersCollection.deleteOne({ _id: ObjectId(req.params.id) }))
