@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const { usersCollection, reviewsCollection } = require('../db');
+const verifyJWT = require('../middleweres/verifyJWT')
 
 
 router.post('/login', async (req, res) => {
@@ -19,7 +21,7 @@ router.put('/user', async (req, res) => {
 })
 
 
-router.get('/alluser', async (req, res) => {
+router.get('/list', async (req, res) => {
     res.send(await usersCollection.find().toArray())
 })
 
@@ -29,7 +31,7 @@ router.get('/user', verifyJWT, async (req, res) => {
 })
 
 
-router.put('/updateProfile', verifyJWT, async (req, res) => {
+router.put('/update-profile', verifyJWT, async (req, res) => {
     const email = req.decoded.email
     const { linkedin, education, location, phone, img, name } = req.body
 
@@ -42,7 +44,7 @@ router.put('/updateProfile', verifyJWT, async (req, res) => {
 })
 
 
-router.patch('/makeadmin', async (req, res) => {
+router.patch('/make-admin', async (req, res) => {
     const id = req.body.id
     const updateDoc = {
         $set: {
@@ -55,7 +57,7 @@ router.patch('/makeadmin', async (req, res) => {
 
 
 
-router.get('/review/byUser', verifyJWT, async (req, res) => {
+router.get('/review', verifyJWT, async (req, res) => {
     const email = req.decoded.email
     res.send(await reviewsCollection.findOne({ email }))
 })

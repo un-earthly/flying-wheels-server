@@ -1,5 +1,9 @@
 const router = require('express').Router();
+const { ObjectId } = require('mongodb');
+const { ordersCollection } = require('../db');
+const verifyJWT = require('../middleweres/verifyJWT')
 
+const stripe = require("stripe")(process.env.STRIPE__KEY);
 
 router.post("/create-payment-intent", verifyJWT, async (req, res) => {
     const { price } = req.body;
@@ -15,7 +19,7 @@ router.post("/create-payment-intent", verifyJWT, async (req, res) => {
 });
 
 
-router.patch('/pay/:id', verifyJWT, async (req, res) => {
+router.patch('/:id', verifyJWT, async (req, res) => {
     const id = req.params.id
     const { transactionId, paymentStatus } = req.body
     const updateDoc = {
@@ -25,11 +29,11 @@ router.patch('/pay/:id', verifyJWT, async (req, res) => {
 
 
 })
-router.get('/pay/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const payFor = await ordersCollection.findOne({ _id: ObjectId(req.params.id) })
     res.send(payFor)
 
 })
 
 
-module.exports=router
+module.exports = router

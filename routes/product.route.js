@@ -1,20 +1,23 @@
 const router = require('express').Router();
+const { ObjectId } = require('mongodb');
+const { productsCollection, ordersCollection, usersCollection } = require('../db');
+const verifyJWT = require('../middleweres/verifyJWT')
 
 
-router.get('/products', async (req, res) => {
-    res.send(await ProductsCollection.find().toArray())
+router.get('/list', async (req, res) => {
+    res.send(await productsCollection.find().toArray())
 })
-router.post('/product', verifyJWT, async (req, res) => {
+router.post('/add', verifyJWT, async (req, res) => {
     const { name, img, desc, minOrdQty, pricePerUnit, availableQty } = req.body
-    const result = await ProductsCollection.insertOne({ name, img, desc, minOrdQty, pricePerUnit, availableQty })
+    const result = await productsCollection.insertOne({ name, img, desc, minOrdQty, pricePerUnit, availableQty })
     res.send(result)
 })
-router.get('/products/:id', verifyJWT, async (req, res) => {
-    let items = await ProductsCollection.findOne({ _id: ObjectId(req.params.id) })
+router.get('/:id', verifyJWT, async (req, res) => {
+    let items = await productsCollection.findOne({ _id: ObjectId(req.params.id) })
     res.send(items)
 })
 router.delete('/product/:id', verifyJWT, async (req, res) => {
-    const result = await ProductsCollection.deleteOne({ _id: ObjectId(req.params.id) })
+    const result = await productsCollection.deleteOne({ _id: ObjectId(req.params.id) })
     res.send(result)
 })
 
@@ -29,4 +32,4 @@ router.post('/purchase', verifyJWT, async (req, res) => {
         : res.status(302).send({ message: 'already exits' })
 })
 
-module.exports=router
+module.exports = router
