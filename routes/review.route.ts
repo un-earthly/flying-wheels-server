@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const verifyJWT = require('../middleweres/verifyJWT')
+import verifyJWT from '../middleweres/verifyJWT'
 import { getReviewsController, addReviewsColltroller } from "../controller/review.controller"
 
 router.get('/list', getReviewsController)

@@ -1,7 +1,7 @@
 import { addProductController, deleteProductController, getAllProductController, getSingleProductController, purchaseProductController } from "../controller/product.controller";
 
 const router = require('express').Router();
-const verifyJWT = require('../middleweres/verifyJWT')
+import verifyJWT from '../middleweres/verifyJWT';
 
 
 router.get('/list', getAllProductController)

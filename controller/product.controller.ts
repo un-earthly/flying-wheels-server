@@ -77,7 +77,7 @@ export const purchaseProductController = (req: Request, res: Response) => {
 
     const result = purchaseProductService({
         id: req.params.id,
-        email: req.decoded.email,
+        email: "req.decoded.email",
 
     }, req.body)
 
