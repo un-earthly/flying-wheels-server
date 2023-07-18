@@ -1,9 +1,8 @@
-import { MongoClient, Collection, ServerApiVersion } from 'mongodb';
+import { MongoClient, Collection } from 'mongodb';
 import { commonConf } from './config/config';
 
-const uri: string = commonConf.node_env === "development" ? 'mongodb://localhost:27017' : `mongodb+srv://${process.env.MONGO__ADMIN}:${process.env.MONGO__PASS}@cluster0.vcjhy.mongodb.net/?retryWrites=true&w=majority`;
+const uri: string = `mongodb+srv://${commonConf.db_user}:${commonConf.db_pass}@cluster0.vcjhy.mongodb.net/?retryWrites=true&w=majority`;
 const client: MongoClient = new MongoClient(uri);
-
 const getDb = (dbName: string, collectionName: string): Collection => {
     return client.db(dbName).collection(collectionName);
 };

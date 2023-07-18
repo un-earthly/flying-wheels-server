@@ -6,7 +6,6 @@ import { connectToDB } from './db';
 
 const app = express();
 const port = process.env.PORT || 80;
-require('dotenv').config();
 
 app.use(cors())
 app.use(express.json())
