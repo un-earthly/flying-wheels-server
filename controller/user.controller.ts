@@ -1,4 +1,5 @@
 import {
+    createUserService,
     getUserByEmailService,
     getUserService,
     makeAdminService,
@@ -43,6 +44,18 @@ export const getUserByEmailController = (req: Request, res: Response) => {
 export const updateUserController = (req: Request, res: Response) => {
 
     const result = updateUserService({ email: "", name: "" })
+
+    sendResponse(res, {
+        status: httpStatus.OK,
+        data: result,
+        message: "Login successful",
+        success: true
+    })
+
+}
+export const createUserController = (req: Request, res: Response) => {
+
+    const result =createUserService()
 
     sendResponse(res, {
         status: httpStatus.OK,

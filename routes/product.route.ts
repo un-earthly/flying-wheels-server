@@ -1,13 +1,18 @@
-import { addProductController, deleteProductController, getAllProductController, getSingleProductController, purchaseProductController } from "../controller/product.controller";
+import express from 'express';
+import {
+    addProductController,
+    getAllProductController,
+    getProductByIdController,
+    updateProductController,
+    deleteProductController,
+} from '../controller/product.controller';
 
-const router = require('express').Router();
-import verifyJWT from '../middleweres/verifyJWT';
+const router = express.Router();
 
+router.post('/', addProductController);
+router.get('/', getAllProductController);
+router.get('/:id', getProductByIdController);
+router.put('/:id', updateProductController);
+router.delete('/:id', deleteProductController);
 
-router.get('/list', getAllProductController)
-router.post('/add', verifyJWT, addProductController)
-router.get('/:id', verifyJWT, getSingleProductController)
-router.delete('/product/:id', verifyJWT, deleteProductController)
-router.post('/purchase', verifyJWT, purchaseProductController)
-
-export default router
+export default router;

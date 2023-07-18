@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-import { reviewsCollection, usersCollection } from "../db";
 
 interface IData {
     linkedin: string;
@@ -12,11 +10,11 @@ interface IData {
 }
 
 export const getUserService = async () => {
-    return await usersCollection.find().toArray();
+    // return await usersCollection.find().toArray();
 };
 
 export const getUserByEmailService = async (email: string) => {
-    return await usersCollection.findOne({ email });
+    // return await usersCollection.findOne({ email });
 };
 
 export const updateUserService = async (data: Partial<IData>) => {
@@ -25,7 +23,7 @@ export const updateUserService = async (data: Partial<IData>) => {
     const updateDoc = {
         $set: { email, name }
     };
-    return await usersCollection.updateOne({ email }, updateDoc, options);
+    // return await usersCollection.updateOne({ email }, updateDoc, options);
 };
 
 export const updateProfileService = async (data: IData) => {
@@ -34,7 +32,7 @@ export const updateProfileService = async (data: IData) => {
     const updateDoc = {
         $set: { name, email, linkedin, img, phone, location, education }
     };
-    return await usersCollection.updateOne({ email }, updateDoc, options);
+    // return await usersCollection.updateOne({ email }, updateDoc, options);
 };
 
 export const makeAdminService = async (id: string) => {
@@ -43,10 +41,15 @@ export const makeAdminService = async (id: string) => {
             Admin: true
         }
     };
-    const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, updateDoc);
-    return result;
+    // const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, updateDoc);
+    // return result;
 };
 
 export const ReviewService = async (email: string) => {
-    return await reviewsCollection.findOne({ email });
+    // return await reviewsCollection.findOne({ email });
 };
+
+
+export const createUserService = () => {
+    return {}
+}

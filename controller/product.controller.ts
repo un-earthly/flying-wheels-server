@@ -1,91 +1,109 @@
-import httpStatus from "http-status"
-import { sendResponse } from "../utils/resSender"
-import { addPRoductService, deleteProductService, getAllProductService, getSingleProductService, purchaseProductService } from "../service/product.service"
-import { Request, Response } from "express"
-import ApiError from "../error/apiError"
+import { Request, Response } from "express";
+import { IAPIResponse } from "../interface/apiResonpons";
+import { IProduct } from "../interface/product.interface";
+import { addProductService, deleteProductService, getAllProductService, getProductByIdService, updateProductService } from "../service/product.service";
+import catchAsync from "../utils/catchAsync";
+import { sendResponse } from "../utils/resSender";
 
-export const getAllProductController = (req: Request, res: Response) => {
+export const addProductController = catchAsync(async (req: Request, res: Response) => {
+    const newProductData: IProduct = req.body;
+    const newProduct = await addProductService(newProductData);
 
-    const result = getAllProductService()
+    const responseData: IAPIResponse<IProduct> = {
+        status: 201,
+        success: true,
+        message: 'Product created successfully',
+        data: newProduct,
+    };
 
-    sendResponse(res, {
-        status: httpStatus.OK,
-        data: result,
-        message: "Login successful",
-        success: true
-    })
+    sendResponse(res, responseData);
+});
 
-}
-export const getSingleProductController = (req: Request, res: Response) => {
+export const getAllProductController = catchAsync(async (req: Request, res: Response) => {
+    const products = await getAllProductService();
 
-    const result = getSingleProductService(req.params.id)
+    const responseData: IAPIResponse<IProduct[]> = {
+        status: 200,
+        success: true,
+        message: 'Products retrieved successfully',
+        data: products,
+    };
 
-    sendResponse(res, {
-        status: httpStatus.OK,
-        data: result,
-        message: "Login successful",
-        success: true
-    })
+    sendResponse(res, responseData);
+});
 
-}
-export const addProductController = (req: Request, res: Response) => {
+export const getProductByIdController = catchAsync(async (req: Request, res: Response) => {
+    const productId: string = req.params.id;
+    const product = await getProductByIdService(productId);
 
-    if (!req.body.data) {
-        throw new ApiError(httpStatus.NOT_FOUND, "Product not found")
+    if (!product) {
+        const responseData: IAPIResponse<null> = {
+            status: 404,
+            success: false,
+            message: 'Product not found',
+            data: null,
+        };
+        sendResponse(res, responseData);
+        return;
     }
-    const {
-        availableQty,
-        desc,
-        img,
-        minOrdQty,
-        name,
-        pricePerUnit
-    } = req.body.data
-    const result = addPRoductService({
-        availableQty,
-        desc,
-        img,
-        minOrdQty,
-        name,
-        pricePerUnit
-    })
 
-    sendResponse(res, {
-        status: httpStatus.OK,
-        data: result,
-        message: "Login successful",
-        success: true
-    })
+    const responseData: IAPIResponse<IProduct> = {
+        status: 200,
+        success: true,
+        message: 'Product retrieved successfully',
+        data: product,
+    };
 
-}
+    sendResponse(res, responseData);
+});
 
+export const updateProductController = catchAsync(async (req: Request, res: Response) => {
+    const productId: string = req.params.id;
+    const updateData: Partial<IProduct> = req.body;
+    const updatedProduct = await updateProductService(productId, updateData);
 
-export const deleteProductController = (req: Request, res: Response) => {
+    if (!updatedProduct) {
+        const responseData: IAPIResponse<null> = {
+            status: 404,
+            success: false,
+            message: 'Product not found',
+            data: null,
+        };
+        sendResponse(res, responseData);
+        return;
+    }
 
-    const result = deleteProductService(req.params.id)
+    const responseData: IAPIResponse<IProduct> = {
+        status: 200,
+        success: true,
+        message: 'Product updated successfully',
+        data: updatedProduct,
+    };
 
-    sendResponse(res, {
-        status: httpStatus.OK,
-        data: result,
-        message: "Login successful",
-        success: true
-    })
+    sendResponse(res, responseData);
+});
 
-}
+export const deleteProductController = catchAsync(async (req: Request, res: Response) => {
+    const productId: string = req.params.id;
+    const deletedProduct = await deleteProductService(productId);
 
-export const purchaseProductController = (req: Request, res: Response) => {
+    if (!deletedProduct) {
+        const responseData: IAPIResponse<null> = {
+            status: 404,
+            success: false,
+            message: 'Product not found',
+            data: null,
+        };
+        sendResponse(res, responseData);
+        return;
+    }
 
-    const result = purchaseProductService({
-        id: req.params.id,
-        email: "req.decoded.email",
+    const responseData: IAPIResponse<IProduct> = {
+        status: 200,
+        success: true,
+        message: 'Product deleted successfully',
+        data: deletedProduct,
+    };
 
-    }, req.body)
-
-    sendResponse(res, {
-        status: httpStatus.OK,
-        data: result,
-        message: "Login successful",
-        success: true
-    })
-
-}
+    sendResponse(res, responseData);
+});

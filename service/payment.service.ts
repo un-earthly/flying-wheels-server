@@ -1,6 +1,4 @@
-import { ObjectId } from "mongodb";
 import { commonConf } from "../config/config";
-import { ordersCollection } from "../db";
 const stripe = require("stripe")(commonConf.STRIPE__KEY);
 
 export const paymentIntentService = async (price: number) => {
@@ -19,12 +17,12 @@ export const updatePaymentOrderService = async ({ id, transactionId, paymentStat
     const updateDoc = {
         $set: { transactionId, paymentStatus }
     };
-    return await ordersCollection.updateOne({ _id: new ObjectId(id) }, updateDoc)
+    // return await ordersCollection.updateOne({ _id: new ObjectId(id) }, updateDoc)
 }
 
 
 export const getPayForService = async (id: string) => {
-    const payFor = await ordersCollection.findOne({ _id: new ObjectId(id) })
-    return payFor
+    // const payFor = await ordersCollection.findOne({ _id: new ObjectId(id) })
+    // return payFor
 
 }

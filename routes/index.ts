@@ -12,29 +12,30 @@ type route = {
     path: string,
     route: RequestHandler
 }
+
 const routes: route[] = [
     {
-        path: "order",
+        path: "/order",
         route: OrderRoutes
     },
     {
-        path: "auth",
+        path: "/auth",
         route: AuthRoutes
     },
     {
-        path: "payment",
+        path: "/payment",
         route: PaymentRoutes
     },
     {
-        path: "product",
+        path: "/product",
         route: ProductRoutes
     },
     {
-        path: "review",
+        path: "/review",
         route: ReviewRoutes
     },
     {
-        path: "user",
+        path: "/user",
         route: UserRoutes
     }
 ];

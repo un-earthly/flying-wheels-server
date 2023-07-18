@@ -1,12 +1,11 @@
 import { ObjectId } from "mongodb"
-import { ordersCollection } from "../db"
 
 export const getOrderService = async () => {
-    return await ordersCollection.find().toArray()
+    // return await Order.find().toArray()
 }
 
 export const byEmailService = async (email: string) => {
-    return await ordersCollection.find({ email }).toArray()
+    // return await Order.find({ email }).toArray()
 }
 
 export const updateOrderService = async (id: string) => {
@@ -15,10 +14,10 @@ export const updateOrderService = async (id: string) => {
             shippedStatus: true
         }
     }
-    return await ordersCollection.updateOne({ _id: new ObjectId(id) }, updateDoc)
+    // return await Order.updateOne({ _id: new ObjectId(id) }, updateDoc)
 }
 
 export const deleteOrderService = async (id:string) => {
-    return await ordersCollection.deleteOne({ _id: new ObjectId(id) })
+    // return await Order.deleteOne({ _id: new ObjectId(id) })
 
 }
