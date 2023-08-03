@@ -1,7 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
-import { IProduct, ProductCategory } from '../interface/product.interface';
+import { IBulkPricing, IProduct, ProductCategory } from '../interface/product.interface';
 
-
+const bulkPricingSchema = new Schema<IBulkPricing>({
+    minQuantity: { type: Number, required: true },
+    pricePerUnit: { type: Number, required: true },
+});
 const productSchema = new Schema<IProduct>({
     name: {
         type: String,
@@ -11,41 +14,39 @@ const productSchema = new Schema<IProduct>({
         type: String,
         required: true
     },
+    specifications: {
+        type: Schema.Types.Mixed
+    },
     price: {
         type: Number,
         required: true
     },
-    quantityInStock: {
+    quantity: {
         type: Number,
         required: true
     },
     category: {
         type: String,
-        enum: Object.values(ProductCategory), required: true
+        enum: Object.values(ProductCategory),
+        required: true
     },
     images: [{
         type: String
     }],
-    specifications: {
-        type: Map,
-        of: String
+    isActive: {
+        type: Boolean,
+        default: true
     },
-    bicycleType: {
-        type: String
-    },
-    size: {
-        type: Number
-    },
-    material: { type: String },
-    brakeType: {
-        type: String
-    },
-    minOrderQuantity: {
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
+    }],
+    bulkPricing: [bulkPricingSchema],
+    minimumOrderQuantity: {
         type: Number,
-        default: 1
+        default: 100
     },
-},
-    { timestamps: true });
+});
 
 const Product = mongoose.model<IProduct>('Product', productSchema);
 

@@ -19,19 +19,6 @@ export const loginService = async (payload: ILoginPayload) => {
     // }
 };
 
-export const updateUserService = async (data: { email: string, name: string }) => {
-    const email = data.email
-    const name = data.name
-    const options = { upsert: true };
-    const updateDoc = {
-        $set: {
-            email,
-            name
-        }
-    };
-    // return await usersCollection.updateOne({ email }, updateDoc, options)
-}
-
 export const makeAdminService = async (id: string) => {
     const updateDoc = {
         $set: {

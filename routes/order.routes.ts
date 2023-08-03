@@ -7,9 +7,9 @@ import {
     getOrdersController
 } from '../controller/order.controller';
 
-router.get('/list', getOrdersController)
+router.get('/', getOrdersController)
+router.get('/', verifyJWT, byEmailController)
 router.patch('/:id', verifyJWT, updateOrderController)
-router.get('/by-email', verifyJWT, byEmailController)
 router.delete('/:id', verifyJWT, deleteOrderController)
 
 

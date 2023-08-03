@@ -1,5 +1,4 @@
 import { Document } from "mongoose";
-
 export enum ProductCategory {
     MOUNTAIN_BIKE = 'Mountain Bike',
     ROAD_BIKE = 'Road Bike',
@@ -10,17 +9,21 @@ export enum ProductCategory {
     RIM = 'Rim',
     DISK = 'Disk',
 }
+
+export interface IBulkPricing {
+    minQuantity: number;
+    pricePerUnit: number;
+}
 export interface IProduct extends Document {
     name: string;
     description: string;
+    specifications: Record<string, string>;
     price: number;
-    quantityInStock: number;
+    quantity: number;
     category: ProductCategory;
     images: string[];
-    specifications: Record<string, string>;
-    bicycleType?: string;
-    size?: number;
-    material?: string;
-    brakeType?: string;
-    minOrderQuantity: number;
+    isActive: boolean;
+    reviews: string[]; 
+    bulkPricing: IBulkPricing[];
+    minimumOrderQuantity: number;
 }

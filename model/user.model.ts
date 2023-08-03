@@ -1,59 +1,52 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IUser, UserRole } from '../interface/user.interface';
 
-const userSchema = new Schema<IUser>(
-    {
-        username: {
-            type: String,
-            required: true,
-            unique: true,
-        },
-        email: {
-            type: String,
-            required: true,
-            unique: true,
-        },
-        password: {
-            type: String,
-            required: true,
-        },
-        role: {
-            type: String,
-            enum: [UserRole.ADMIN,
-            UserRole.BUYER],
-            default: UserRole.BUYER,
-        },
-        profilePic: {
-            type: String,
-            default: '',
-        },
-        address: {
-            type: String,
-            default: '',
-        },
-        location: {
-            type: String,
-            default: '',
-        },
-        cards: [
-            {
-                cardNumber: {
-                    type: String,
-                    required: true,
-                },
-                cardHolderName: {
-                    type: String,
-                    required: true,
-                },
-                expirationDate: {
-                    type: String,
-                    required: true,
-                },
-            },
-        ],
+const userSchema = new Schema<IUser>({
+    username: {
+        type: String,
+        required: true,
+        unique: true
     },
-    { timestamps: true }
-);
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    name: {
+        type: String
+    },
+    phone: {
+        type: String
+    },
+    address: {
+        type: String
+    },
+    role: {
+        type: String,
+        enum: UserRole, required: true
+    },
+    profilePic: { type: String },
+    paymentMethods: [{ type: String }],
+    orders: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Order'
+    }],
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
+    }],
+    wishlist: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Product'
+    }],
+},
+    {
+        timestamps: true
+    });
 
 const User = model<IUser>('User', userSchema);
 
