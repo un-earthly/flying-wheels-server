@@ -17,6 +17,8 @@ const reviewSchema = new Schema<IReview>({
     comment: {
         type: String
     },
+}, {
+    timestamps: true
 });
 
 const Review = model<IReview>('Review', reviewSchema);
