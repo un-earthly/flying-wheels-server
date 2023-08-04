@@ -1,16 +1,16 @@
 import express from "express"
 import cors from "cors"
-import router from "./routes";
-import { commonConf } from './config/config';
+import router from "../../routes";
+import { commonConf } from '../../config/config';
 import mongoose from 'mongoose';
-
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = process.env.PORT || 80;
 
 app.use(cors())
 app.use(express.json())
-
+app.use(cookieParser());
 
 app.use("/api/v1", router)
 
