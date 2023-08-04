@@ -1,10 +1,8 @@
 import { Document } from 'mongoose';
-import { IProduct } from '../product/product.interface';
 import { IUser } from '../user/user.interface';
-
 export interface IWishlistItem {
-    _id: string;
-    product: IProduct;
+    _id?: string;
+    product: string;
     createdAt: Date;
 }
 

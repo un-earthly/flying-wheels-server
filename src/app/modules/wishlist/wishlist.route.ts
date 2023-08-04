@@ -1,7 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Router } from 'express';
-import { WishlistController } from './wishlist.controller';
+import express from 'express';
+import * as WishlistController from './wishlist.controller';
+import { authenticate } from '../../middlewares/authMiddleware';
 
-const router = Router();
+const router = express.Router();
 
-export const WishlistRoutes = router;
+router.post('/add', authenticate, WishlistController.addToWishlist);
+router.delete('/remove/:productId', authenticate, WishlistController.removeFromWishlist);
+router.get('/items', authenticate, WishlistController.getUserWishlistItems);
+
+export default router;
