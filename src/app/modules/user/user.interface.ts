@@ -1,5 +1,10 @@
 import { Document, Model } from "mongoose";
-
+export interface ICreateUserInput {
+    name: string;
+    email: string;
+    password: string;
+    role: UserRole;
+}
 export enum UserRole {
     ADMIN = 'admin',
     BUYER = 'buyer',

@@ -75,7 +75,7 @@ export const AuthService = {
     },
 
 
-    resetPass: async (payload: IUserCredentials) => {
+    resetPassword: async (payload: IUserCredentials) => {
         const { email, password } = payload;
 
         // Check if the user exists in the database
