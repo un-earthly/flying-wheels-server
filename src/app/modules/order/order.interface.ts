@@ -3,7 +3,7 @@ import { Model, Types } from 'mongoose';
 
 
 export type IOrderModel = Model<IOrder, Record<string, unknown>>; import { ObjectId } from 'mongoose';
-import { Document, Schema } from 'mongoose';
+import { Document } from 'mongoose';
 export enum OrderStatus {
     PENDING = 'pending',
     PROCESSING = 'processing',
