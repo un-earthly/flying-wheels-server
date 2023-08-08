@@ -1,17 +1,60 @@
 import { User } from '../user/user.model';
-import { IUserCredentials } from './auth.interface';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import { AuthProvider, IAuth, IUserCredentials } from './auth.interface';
 import { IUser } from '../user/user.interface';
 import { comparePassword } from '../../../../utils/comparePassword';
 import ApiError from '../../../../error/apiError';
 import httpStatus from 'http-status';
-import { generateToken, verifyToken } from '../../../../utils/token';
+import { generateRefreshToken, generateToken, verifyToken } from '../../../../utils/token';
 import nodemailer, { TransportOptions } from "nodemailer"
-
-const JWT_SECRET = 'your_secret_key';
+import Auth from './auth.model';
+import { jwtConf } from '../../../../config/config';
+import { ITokenPayload } from '../../../../interface/tokenPayload';
 
 export const AuthService = {
+    register: async (userData: IUser, authInfo: Partial<IAuth>) => {
+        const existingUser = await User.findOne({ email: userData.email });
+        if (existingUser) {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Email already in use');
+        }
+
+        // Create a new user
+        const newUser = await User.create(userData);
+
+
+        const tokenPayload: ITokenPayload = {
+            _id: newUser._id,
+            email: newUser.email,
+            role: newUser.role
+        }
+
+
+        // Generate tokens
+        const accessToken = generateToken(tokenPayload);
+        const refreshToken = generateRefreshToken(tokenPayload);
+
+
+        // Create an Auth document
+        const authData = new Auth({
+            userId: newUser._id,
+            refreshToken,
+            accessToken,
+            provider: AuthProvider.LOCAL,
+            loginInfo: authInfo.loginInfo,
+            registerInfo: authInfo.registerInfo,
+        });
+
+        // Save the Auth document
+        await authData.save();
+
+
+        newUser.accessToken = accessToken;
+        newUser.refreshToken = refreshToken;
+
+        return {
+            user: newUser,
+        };
+    },
+
     login: async (userData: IUserCredentials) => {
         const { email, password } = userData;
 
@@ -23,15 +66,16 @@ export const AuthService = {
         }
 
         // Compare the provided password with the hashed password in the database
-        const isPasswordValid = comparePassword(password, user.password);
+        // const isPasswordValid = comparePassword(password, user.password);
 
-        if (!isPasswordValid) {
-            throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid credentials.');
+        if (!comparePassword(user.password, password)) {
+            throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid Password.');
         }
+        const tokenPayload: ITokenPayload = { _id: user._id, email: user.email, role: user.role }
 
         // Generate access token and refresh token
-        const accessToken = generateToken({ _id: user._id, email: user.email, role: user.role });
-        const refreshToken = generateToken({ _id: user._id, email: user.email, role: user.role });
+        const accessToken = generateToken(tokenPayload);
+        const refreshToken = generateRefreshToken(tokenPayload);
 
         user.refreshToken = refreshToken;
         user.accessToken = accessToken;
@@ -51,6 +95,7 @@ export const AuthService = {
 
         // Clear the refresh token for the user
         user.refreshToken = undefined;
+        user.accessToken = undefined;
         await user.save();
 
         return { message: 'Logout successful.' };
@@ -58,7 +103,7 @@ export const AuthService = {
 
     refreshToken: async (token: string) => {
         // Verify the provided refresh token
-        const decodedToken = verifyToken(token)
+        const decodedToken = verifyToken(token, jwtConf.refreshTokenSecret);
 
         if (!decodedToken) {
             throw new ApiError(httpStatus.NOT_FOUND, "Invalid refresh token")

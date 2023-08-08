@@ -5,6 +5,16 @@ import catchAsync from '../../../../utils/catchAsync';
 import { IUserCredentials } from './auth.interface';
 import httpStatus from 'http-status';
 
+export const register = catchAsync(async (req: Request, res: Response) => {
+    const { loginInfo, registerInfo, provider, ...userData } = req.body;
+    const result = await AuthService.register(userData, { loginInfo, registerInfo, provider });
+    sendResponse(res, {
+        status: httpStatus.CREATED,
+        success: true,
+        message: 'Registration successful',
+        data: result,
+    });
+});
 
 
 export const login = catchAsync(async (req: Request, res: Response) => {

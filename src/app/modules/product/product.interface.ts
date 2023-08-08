@@ -9,6 +9,9 @@ export enum ProductCategory {
     RIM = 'Rim',
     DISK = 'Disk',
 }
+export interface IProductCategory {
+    name: string;
+}
 
 export interface IBulkPricing {
     minQuantity: number;

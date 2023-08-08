@@ -3,6 +3,7 @@ require('dotenv').config();
 export const jwtConf = {
     secret: process.env.JWT_SECRET as string,
     duration: process.env.JWT_DURATION,
+    refreshTokenSecret: process.env.JWT_REFRESH_SECRET as string
 }
 export const commonConf = {
     node_env: process.env.NODE_ENV as string,

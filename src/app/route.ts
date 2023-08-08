@@ -1,15 +1,16 @@
 import { AuthRoutes } from "./modules/auth/auth.route";
-import { UserRoutes } from "./modules/user/user.route";
+import { UserRoutes } from "./modules/user/user.route"; 
+import { WishlistRoutes } from "./modules/wishlist/wishlist.route";
 const router = require("express").Router();
 const routes = [
     {
         path: "/auth",
         children: AuthRoutes,
     },
-    // {
-    //     path: "/products",
-    //     children: ProductRoutes,
-    // },
+    {
+        path: "/wishlist",
+        children: WishlistRoutes,
+    },
     {
         path: "/users",
         children: UserRoutes,

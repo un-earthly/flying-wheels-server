@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { IUser, IUserModel, UserRole } from './user.interface';
+import bcrypt from 'bcrypt';
 
 const UserSchema = new Schema<IUser, IUserModel>({
   username: {
@@ -14,7 +15,8 @@ const UserSchema = new Schema<IUser, IUserModel>({
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    select: 0
   },
   name: {
     type: String
@@ -47,18 +49,25 @@ const UserSchema = new Schema<IUser, IUserModel>({
     type: Schema.Types.ObjectId,
     ref: 'Product'
   }],
-  accessToken: {
-    type: String,
-    default: undefined,
-  },
-  refreshToken: {
-    type: String,
-    default: undefined,
-  },
 },
   {
     timestamps: true
   });
 
+
+// Hash the password before saving
+UserSchema.pre<IUser>('save', async function (next) {
+  if (!this.isModified('password')) return next();
+
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(this.password, saltRounds);
+  this.password = hashedPassword;
+  next();
+});
+
+// Method to compare passwords
+UserSchema.methods.comparePassword = async function (password: string) {
+  return bcrypt.compare(password, this.password);
+};
 
 export const User = model<IUser, IUserModel>('User', UserSchema);

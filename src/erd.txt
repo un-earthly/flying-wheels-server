@@ -1,0 +1,69 @@
+            +-----------------------+
+            |        User           |
+            +-----------------------+
+            | _id                   |
+            | username              |
+            | email                 |
+            | password              |
+            | name                  |
+            | phone                 |
+            | address               |
+            | role                  |
+            | profilePic            |
+            | paymentMethods        |
+            +-----------------------+
+                   |           |
+                   |           |
+                   |           |
+            +-----------------------+
+            |      Auth             |
+            +-----------------------+
+            | _id                   |
+            | userId                |
+            | refreshToken          |
+            | accessToken           |
+            | provider              |
+            | loginInfo             |
+            | registerInfo          |
+            +-----------------------+
+                   |
+                   |
+                   |
+            +-----------------------+
+            |      Review           |
+            +-----------------------+
+            | _id                   |
+            | user                  |
+            | product               |
+            | rating                |
+            | comment               |
+            +-----------------------+
+                   |
+                   |
+                   |
+            +-----------------------+
+            |      Product          |
+            +-----------------------+
+            | _id                   |
+            | name                  |
+            | description           |
+            | specifications        |
+            | price                 |
+            | quantity              |
+            | category              |
+            | images                |
+            | isActive              |
+            | reviews               |
+            | bulkPricing           |
+            | minimumOrderQuantity  |
+            +-----------------------+
+                   |
+                   |
+                   |
+            +-----------------------+
+            |      Wishlist         |
+            +-----------------------+
+            | _id                   |
+            | user                  |
+            | products              |
+            +-----------------------+
