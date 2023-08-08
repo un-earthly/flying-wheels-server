@@ -1,6 +1,6 @@
 import httpStatus from "http-status";
-import ApiError from "../../../../error/apiError";
-import { IReview } from "../../../../interface/review.interface";
+import ApiError from "../../../error/apiError";
+import { IReview } from "../../../interface/review.interface";
 import Review from "../../../../model/review.model";
 import { IProduct, IProductCategory } from "./product.interface";
 import Product from "./product.model";

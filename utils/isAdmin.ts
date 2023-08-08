@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ITokenPayload } from '../interface/tokenPayload';
+import { ITokenPayload } from '../src/interface/tokenPayload';
 
 // Function to check if the user is an admin
 export const isAdmin = (user: ITokenPayload): boolean => {

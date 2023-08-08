@@ -4,7 +4,7 @@ import { sendResponse } from '../../../../utils/resSender';
 import { IProduct } from './product.interface';
 import catchAsync from '../../../../utils/catchAsync';
 import * as productService from './product.service';
-import ApiError from '../../../../error/apiError';
+import ApiError from '../../../error/apiError';
 // GET /api/products - Get all products
 export const getProductsController = catchAsync(async (req: Request, res: Response) => {
     const data = await productService.getProducts();

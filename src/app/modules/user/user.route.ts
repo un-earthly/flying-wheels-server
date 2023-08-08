@@ -1,7 +1,7 @@
 import express from 'express';
 import { createUserController, deleteUserController, getAllUsersController, getUserByIdController, getUserOrdersController, getUserReviewsController, getUserWishlistController, updateUserController, updateUserRoleController } from "./user.controller"
-import { authenticate } from '../../middlewares/authMiddleware';
 import { isAdmin } from '../../../../utils/isAdmin';
+import { authenticate } from '../auth/auth.middlewares';
 
 const router = express.Router();
 

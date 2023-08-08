@@ -1,13 +1,14 @@
 import httpStatus from "http-status";
-import ApiError from "../../../../error/apiError";
-import { Product } from "../product/product.model";
+import ApiError from "../../../error/apiError";
 import { IUser } from "../user/user.interface";
 import { IWishlist, IWishlistItem } from "./wishlist.interface";
 import { Wishlist } from "./wishlist.model";
+import { ObjectId } from "mongoose";
+import Product from "../product/product.model";
 
 
 // Add a product to the user's wishlist
-export const addToWishlist = async (user: IUser, productId: string): Promise<IWishlist> => {
+export const addToWishlist = async (user: IUser, productId: ObjectId): Promise<IWishlist> => {
     const product = await Product.findById(productId).exec();
 
     if (!product) {

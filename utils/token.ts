@@ -1,8 +1,8 @@
-import ApiError from "../error/apiError";
+import ApiError from "../src/error/apiError";
 import httpStatus from "http-status";
-import { ITokenPayload } from "../interface/tokenPayload";
+import { ITokenPayload } from "../src/interface/tokenPayload";
 import { Secret, sign, verify } from "jsonwebtoken";
-import { jwtConf } from "../config/config";
+import { jwtConf } from "../src/config/config";
 
 
 export const generateToken = (payload: ITokenPayload): string => {

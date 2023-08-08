@@ -2,13 +2,13 @@ import { User } from '../user/user.model';
 import { AuthProvider, IAuth, IUserCredentials } from './auth.interface';
 import { IUser } from '../user/user.interface';
 import { comparePassword } from '../../../../utils/comparePassword';
-import ApiError from '../../../../error/apiError';
+import ApiError from '../../../error/apiError';
 import httpStatus from 'http-status';
 import { generateRefreshToken, generateToken, verifyToken } from '../../../../utils/token';
 import nodemailer, { TransportOptions } from "nodemailer"
 import Auth from './auth.model';
-import { jwtConf } from '../../../../config/config';
-import { ITokenPayload } from '../../../../interface/tokenPayload';
+import { jwtConf } from '../../../config/config';
+import { ITokenPayload } from '../../../interface/tokenPayload';
 
 export const AuthService = {
     register: async (userData: IUser, authInfo: Partial<IAuth>) => {

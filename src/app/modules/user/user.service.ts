@@ -1,13 +1,13 @@
 import httpStatus from "http-status";
-import ApiError from "../../../../error/apiError";
-import { Order } from "../order/order.model";
-import { IUser, UserRole } from "./user.interface";
+import ApiError from "../../../error/apiError";
 import { User } from "./user.model";
 import { IOrder } from "../order/order.interface";
-import Review from "../../../../model/review.model";
-import { IReview } from "../../../../interface/review.interface";
 import { Wishlist } from "../wishlist/wishlist.model";
 import { IWishlist } from "../wishlist/wishlist.interface";
+import { IUser, UserRole } from "./user.interface";
+import Order from "../order/order.model";
+import Review from "../review/review.model";
+import { IReview } from "../review/review.interface";
 
 export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
     // Create a new user and save it to the database

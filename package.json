@@ -5,13 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.ts",
-    "dev": "tsnd --respawn index.ts"
+    "dev": "tsnd --respawn ./src/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/stripe": "^8.0.417",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
@@ -26,6 +25,7 @@
     "typescipt": "^1.0.0"
   },
   "devDependencies": {
+    "@types/stripe": "^8.0.417",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
