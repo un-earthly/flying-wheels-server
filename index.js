@@ -96,14 +96,14 @@ const run = async () => {
                     shippedStatus: true
                 }
             }
-            res.send(await ordersCollection.updateOne({ _id: ObjectId(req.body) }, updateDoc))
+            res.send(await ordersCollection.updateOne({ _id: new ObjectId(req.body) }, updateDoc))
         })
         app.get('/myorders', verifyJWT, async (req, res) => {
             const email = req.decoded.email
             res.send(await ordersCollection.find({ email }).toArray())
         })
         app.delete('/orders/:id', verifyJWT, async (req, res) => {
-            res.send(await ordersCollection.deleteOne({ _id: ObjectId(req.params.id) }))
+            res.send(await ordersCollection.deleteOne({ _id: new ObjectId(req.params.id) }))
 
         })
         // products based apis 
@@ -116,11 +116,11 @@ const run = async () => {
             res.send(result)
         })
         app.get('/products/:id', verifyJWT, async (req, res) => {
-            let items = await ProductsCollection.findOne({ _id: ObjectId(req.params.id) })
+            let items = await ProductsCollection.findOne({ _id: new ObjectId(req.params.id) })
             res.send(items)
         })
         app.delete('/product/:id', verifyJWT, async (req, res) => {
-            const result = await ProductsCollection.deleteOne({ _id: ObjectId(req.params.id) })
+            const result = await ProductsCollection.deleteOne({ _id: new ObjectId(req.params.id) })
             res.send(result)
         })
 
@@ -141,7 +141,7 @@ const run = async () => {
                     Admin: true
                 }
             }
-            const result = await usersCollection.updateOne({ _id: ObjectId(id) }, updateDoc)
+            const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, updateDoc)
             res.send(result)
         })
         // stripe || payment related apis
@@ -160,7 +160,7 @@ const run = async () => {
 
 
         app.get('/pay/:id', async (req, res) => {
-            const payFor = await ordersCollection.findOne({ _id: ObjectId(req.params.id) })
+            const payFor = await ordersCollection.findOne({ _id: new ObjectId(req.params.id) })
             res.send(payFor)
 
         })
@@ -170,7 +170,7 @@ const run = async () => {
             const updateDoc = {
                 $set: { transactionId, paymentStatus }
             };
-            res.send(await ordersCollection.updateOne({ _id: ObjectId(id) }, updateDoc))
+            res.send(await ordersCollection.updateOne({ _id: new ObjectId(id) }, updateDoc))
 
 
         })
